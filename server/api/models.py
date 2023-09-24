@@ -8,8 +8,13 @@ metadata = MetaData(naming_convention={
 
 db = SQLAlchemy(metadata=metadata)
 
-# class Restaurant(db.Model, SerializerMixin):
-#     __tablename__ = 'restaurants'
+class Restaurant(db.Model, SerializerMixin):
+    __tablename__ = 'restaurants'
 
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String, unique=True)
+    address = db.Column(db.String)
 
+    def __repr__(self):
+        return f'Name={self.name} Address={self.address}'
     
