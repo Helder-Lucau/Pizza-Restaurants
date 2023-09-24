@@ -9,16 +9,6 @@ metadata = MetaData(naming_convention={
 
 db = SQLAlchemy(metadata=metadata)
 
-class Restaurant(db.Model, SerializerMixin):
-    __tablename__ = 'restaurants'
-
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String, unique=True)
-    address = db.Column(db.String)
-
-    def __repr__(self):
-        return f'Name={self.name} Address={self.address}'
-
 class Pizza(db.Model, SerializerMixin):
      __tablename__ = 'pizzas'
 
@@ -30,4 +20,27 @@ class Pizza(db.Model, SerializerMixin):
 
      def __repr__(self):
         return f'Name={self.name} Ingredients={self.ingredients}'
-    
+
+class Restaurant(db.Model, SerializerMixin):
+    __tablename__ = 'restaurants'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String, unique=True)
+    address = db.Column(db.String)
+
+    def __repr__(self):
+        return f'Name={self.name} Address={self.address}'
+
+class RestaurantPizza(db.Model, SerializerMixin):
+     __tablename__ = 'restaurant_pizzas'
+
+     id = db.Column(db.Integer, primary_key=True)
+     pizza_id = db.Column(db.Integer, db.ForeignKey('pizzas.id'))
+     restaurant_id = db.Column(db.Integer, db.ForeignKey('restaurants.id'))
+     price = db.Column(db.Float)
+
+     created_at = db.Column(db.DateTime, server_default=db.func.now())
+     updated_at = db.Column(db.DateTime, onupdate=db.func.now())
+
+     def __repr__(self):
+        return f'Price={self.price} pizza={self.pizza_id} restaurant={self.restaurant_id}'
