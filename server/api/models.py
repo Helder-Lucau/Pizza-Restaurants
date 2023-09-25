@@ -13,6 +13,8 @@ db = SQLAlchemy(metadata=metadata)
 class Pizza(db.Model, SerializerMixin):
      __tablename__ = 'pizzas'
 
+     serialize_rules = ('-restaurant_pizzas.pizza')
+
      id = db.Column(db.Integer, primary_key=True)
      name = db.Column(db.String)
      ingredients = db.Column(db.String)
@@ -25,6 +27,8 @@ class Pizza(db.Model, SerializerMixin):
 class Restaurant(db.Model, SerializerMixin):
     __tablename__ = 'restaurants'
 
+    serialize_rules = ('-restaurant_pizzas.restaurant',)
+
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, unique=True)
     address = db.Column(db.String)
@@ -34,14 +38,17 @@ class Restaurant(db.Model, SerializerMixin):
     def validate_name(self, key, name):
         if len(name) > 50:
             raise ValueError("Name must be less than 50 words")
-        else:
-            return name
+        return name
+    
+    # Relationship
 
     def __repr__(self):
         return f'Name={self.name} Address={self.address}'
 
 class RestaurantPizza(db.Model, SerializerMixin):
      __tablename__ = 'restaurant_pizzas'
+
+     serialize_rules = ('-restaurant.restaurant_pizzas', '-pizza.restaurant_pizzas',)
 
      id = db.Column(db.Integer, primary_key=True)
      pizza_id = db.Column(db.Integer, db.ForeignKey('pizzas.id'))
