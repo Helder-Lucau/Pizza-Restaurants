@@ -2,7 +2,6 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import MetaData
 from sqlalchemy_serializer import SerializerMixin
 from sqlalchemy.orm import validates
-from datetime import datetime
 
 metadata = MetaData(naming_convention={
     "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",
@@ -21,6 +20,9 @@ class Pizza(db.Model, SerializerMixin):
      created_at = db.Column(db.DateTime, server_default=db.func.now())
      updated_at = db.Column(db.DateTime, onupdate=db.func.now())
 
+     # Relationship one to many 
+     restaurant_pizzas = db.relationship('RestaurantPizza', backref='pizza')
+
      def __repr__(self):
         return f'Name={self.name} Ingredients={self.ingredients}'
 
@@ -30,17 +32,18 @@ class Restaurant(db.Model, SerializerMixin):
     serialize_rules = ('-restaurant_pizzas.restaurant',)
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String, unique=True)
+    name = db.Column(db.String(50), unique=True)
     address = db.Column(db.String)
 
     # Validation: name length must be less than 50 words
-    @validates('name')
-    def validate_name(self, key, name):
-        if len(name) > 50:
-            raise ValueError("Name must be less than 50 words")
-        return name
+    # @validates('name')
+    # def validate_name(self, key, name):
+    #     if len(name) > 50:
+    #         raise ValueError("Name must be less than 50 words")
+    #     return name
     
-    # Relationship
+    # Relationship one to many
+    restaurant_pizzas = db.relationship('RestaurantPizza', backref='restaurant')
 
     def __repr__(self):
         return f'Name={self.name} Address={self.address}'
