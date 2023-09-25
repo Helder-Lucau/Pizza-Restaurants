@@ -1,6 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import MetaData
 from sqlalchemy_serializer import SerializerMixin
+from sqlalchemy.orm import validates
 from datetime import datetime
 
 metadata = MetaData(naming_convention={
@@ -28,6 +29,14 @@ class Restaurant(db.Model, SerializerMixin):
     name = db.Column(db.String, unique=True)
     address = db.Column(db.String)
 
+    # Validation: name length must be less than 50 words
+    @validates('name')
+    def validate_name(self, key, name):
+        if len(name) > 50:
+            raise ValueError("Name must be less than 50 words")
+        else:
+            return name
+
     def __repr__(self):
         return f'Name={self.name} Address={self.address}'
 
@@ -41,6 +50,13 @@ class RestaurantPizza(db.Model, SerializerMixin):
 
      created_at = db.Column(db.DateTime, server_default=db.func.now())
      updated_at = db.Column(db.DateTime, onupdate=db.func.now())
+
+     # Validation: price must be between 1 and 30
+     @validates('price')
+     def validate_price(self, key, price):
+        if price is not range(1, 31):
+            raise ValueError("Price must be between 1 and 30")
+        return price
 
      def __repr__(self):
         return f'Price={self.price} pizza={self.pizza_id} restaurant={self.restaurant_id}'
