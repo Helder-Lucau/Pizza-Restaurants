@@ -10,20 +10,20 @@ metadata = MetaData(naming_convention={
 db = SQLAlchemy(metadata=metadata)
 
 class Pizza(db.Model, SerializerMixin):
-     __tablename__ = 'pizzas'
+    __tablename__ = 'pizzas'
 
-     serialize_rules = ('-restaurant_pizzas.pizza')
+    serialize_rules = ('-restaurant_pizzas.pizza',)
 
-     id = db.Column(db.Integer, primary_key=True)
-     name = db.Column(db.String)
-     ingredients = db.Column(db.String)
-     created_at = db.Column(db.DateTime, server_default=db.func.now())
-     updated_at = db.Column(db.DateTime, onupdate=db.func.now())
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String)
+    ingredients = db.Column(db.String)
+    created_at = db.Column(db.DateTime, server_default=db.func.now())
+    updated_at = db.Column(db.DateTime, onupdate=db.func.now())
 
-     # Relationship one to many 
-     restaurant_pizzas = db.relationship('RestaurantPizza', backref='pizza')
+    # Relationship one to many 
+    restaurant_pizzas = db.relationship('RestaurantPizza', back_populates='pizza', cascade='all, delete-orphan')
 
-     def __repr__(self):
+    def __repr__(self):
         return f'Name={self.name} Ingredients={self.ingredients}'
 
 class Restaurant(db.Model, SerializerMixin):
@@ -43,30 +43,34 @@ class Restaurant(db.Model, SerializerMixin):
     #     return name
     
     # Relationship one to many
-    restaurant_pizzas = db.relationship('RestaurantPizza', backref='restaurant')
+    restaurant_pizzas = db.relationship('RestaurantPizza', back_populates='restaurant', cascade="all, delete-orphan")
 
     def __repr__(self):
         return f'Name={self.name} Address={self.address}'
 
 class RestaurantPizza(db.Model, SerializerMixin):
-     __tablename__ = 'restaurant_pizzas'
+    __tablename__ = 'restaurant_pizzas'
 
-     serialize_rules = ('-restaurant.restaurant_pizzas', '-pizza.restaurant_pizzas',)
+    serialize_rules = ('-restaurant.restaurant_pizzas', '-pizza.restaurant_pizzas',)
 
-     id = db.Column(db.Integer, primary_key=True)
-     pizza_id = db.Column(db.Integer, db.ForeignKey('pizzas.id'))
-     restaurant_id = db.Column(db.Integer, db.ForeignKey('restaurants.id'))
-     price = db.Column(db.Float)
+    id = db.Column(db.Integer, primary_key=True)
+    pizza_id = db.Column(db.Integer, db.ForeignKey('pizzas.id'))
+    restaurant_id = db.Column(db.Integer, db.ForeignKey('restaurants.id'))
+    price = db.Column(db.Float)
 
-     created_at = db.Column(db.DateTime, server_default=db.func.now())
-     updated_at = db.Column(db.DateTime, onupdate=db.func.now())
+    created_at = db.Column(db.DateTime, server_default=db.func.now())
+    updated_at = db.Column(db.DateTime, onupdate=db.func.now())
 
-     # Validation: price must be between 1 and 30
-     @validates('price')
-     def validate_price(self, key, price):
+    # Relationship patterns many to one
+    pizza = db.relationship('Pizza', back_populates='restaurant_pizzas')
+    restaurant = db.relationship('Restaurant', back_populates='restaurant_pizzas')
+
+    # Validation: price must be between 1 and 30
+    @validates('price')
+    def validate_price(self, key, price):
         if price is not range(1, 31):
             raise ValueError("Price must be between 1 and 30")
         return price
 
-     def __repr__(self):
+    def __repr__(self):
         return f'Price={self.price} pizza={self.pizza_id} restaurant={self.restaurant_id}'
