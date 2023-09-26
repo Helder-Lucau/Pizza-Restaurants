@@ -86,16 +86,18 @@ api.add_resource(Pizzas, '/pizzas')
 class RestaurantPizzas(Resource):
     def post(self):
         new_restaurant_pizza = RestaurantPizza(
-            price=request.get_json['price'],
-            pizza_id=request.get_json['pizza_id'],
-            restaurant_id=request.get_json['restaurant_id']
+            price=request.form['price'],
+            pizza_id=request.form['pizza_id'],
+            restaurant_id=request.form['restaurant_id']
         )
         db.session.add(new_restaurant_pizza)
         db.session.commit()
 
+        # # if RestaurantPizza.query.filter(RestaurantPizza.id == new_restaurant_pizza.id).first is N
+
         response_dict = new_restaurant_pizza.to_dict()
         response = make_response(jsonify(response_dict), 201)
         return response
-    
+# add the resource to the API
 api.add_resource(RestaurantPizzas, '/restaurant_pizzas')
 
