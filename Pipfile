@@ -9,6 +9,9 @@ flask-migrate = "*"
 sqlalchemy-serializer = "*"
 flask-restful = "*"
 flask-sqlalchemy = "*"
+faker = "*"
+jsonify = "*"
+faker-food = "*"
 
 [dev-packages]
 
