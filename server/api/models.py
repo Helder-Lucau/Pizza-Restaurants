@@ -34,13 +34,6 @@ class Restaurant(db.Model, SerializerMixin):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), unique=True)
     address = db.Column(db.String)
-
-    # Validation: name length must be less than 50 words
-    # @validates('name')
-    # def validate_name(self, key, name):
-    #     if len(name) > 50:
-    #         raise ValueError("Name must be less than 50 words")
-    #     return name
     
     # Relationship one to many
     restaurant_pizzas = db.relationship('RestaurantPizza', back_populates='restaurant', cascade="all, delete-orphan")

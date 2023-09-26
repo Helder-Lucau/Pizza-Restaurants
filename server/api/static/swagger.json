@@ -1,0 +1,63 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "description": "Flask Pizza Restaurant REST API",
+    "version": "1.0.0",
+    "title": "Pizza Restaurant Rest API",
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "tags": [
+    {
+      "name": "Pizza Restaurant API",
+      "description": "REST API"
+    }
+  ],
+  "servers": [
+    {
+      "url": "/"
+    }
+  ],
+  "components": {
+    "schemas": {
+      "Restaurant": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "address": {
+            "type": "string"
+          }
+        }
+      },
+      "Pizza": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "integer"
+          },
+          "ingredients": {
+            "type": "string"
+          }
+        }
+      },
+      "RestaurantPizza": {
+        "type": "object",
+        "properties": {
+          "pizza_id": {
+            "type": "integer"
+          },
+          "restaurant_id": {
+            "type": "integer"
+          },
+          "price": {
+            "type": "float"
+          }
+        }
+      }
+    }
+  }
+}
