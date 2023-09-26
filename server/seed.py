@@ -33,3 +33,15 @@ with app.app_context():
         restaurants.append(add_restaurant)
     db.session.add_all(restaurants)
     db.session.commit()
+
+    restaurant_pizzas = []
+    for i in range(50):
+        rp = RestaurantPizza(
+            pizza = rc(pizzas),
+            restaurant = rc(restaurants),
+            price = randint(1,30)
+        )
+        restaurant_pizzas.append(rp)
+
+    db.session.add_all(restaurant_pizzas)
+    db.session.commit()

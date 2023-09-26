@@ -31,25 +31,40 @@ class RestaurantByID(Resource):
 
     def get(self, id):
 
-        restaurant_by_id = Restaurant.query.filter_by(id=id).first()
-        if restaurant_by_id:
-            response = make_response(jsonify(restaurant_by_id), 200)
-        else:
+        restaurant = Restaurant.query.filter_by(id=id).first()
+        if not restaurant:
             response_body = {"error": "Restaurant not found"}
-            response = make_response(response_body, 404)
-        return response
+            response = make_response(
+                jsonify(response_body), 
+                404
+            )
+            return response
+        else:
+            response_dict = restaurant.to_dict()
+            response = make_response(
+                jsonify(response_dict), 
+                200
+            )
+            return response
     
     def delete(self, id):
 
         restaurant_by_id = Restaurant.query.filter_by(id=id).first()
-        if restaurant_by_id:
+        if not restaurant_by_id:
+            response_body = {"error": "Restaurant does not exist"}
+            response = make_response(
+                jsonify(response_body), 
+                404
+            )
+            return response
+        else:
             db.session.delete(restaurant_by_id)
             db.session.commit()
             response_body = {"message": "restaurant deleted successfully"}
-            response = make_response(response_body, 200)
-        else:
-            response_body = {"error": "Restaurant does not exist"}
-            response = make_response(response_body, 404)
+            response = make_response(
+                jsonify(response_body),
+                200
+                )            
         return response
     
 api.add_resource(RestaurantByID, '/restaurants/<int:id>')
