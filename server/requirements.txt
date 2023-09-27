@@ -5,6 +5,5 @@ flask-restful
 flask-sqlalchemy
 faker
 jsonify 
-faker-food 
 flask-swagger-ui 
 gunicorn
