@@ -1,6 +1,6 @@
-from flask import make_response, request, jsonify, app
+from flask import make_response, request, jsonify
 from flask_restful import Resource
-from . import api
+from . import api, app
 from api.models import db, Restaurant, Pizza, RestaurantPizza
 
 
