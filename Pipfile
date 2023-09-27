@@ -13,6 +13,7 @@ faker = "*"
 jsonify = "*"
 faker-food = "*"
 flask-swagger-ui = "*"
+gunicorn = "*"
 
 [dev-packages]
 

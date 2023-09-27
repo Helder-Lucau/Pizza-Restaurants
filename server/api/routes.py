@@ -1,22 +1,12 @@
-from flask import make_response, request, jsonify
+from flask import make_response, request, jsonify, app
 from flask_restful import Resource
 from . import api
 from api.models import db, Restaurant, Pizza, RestaurantPizza
 
-class Index(Resource):
 
-    def get(self):
-
-        response_dict = {
-            "message": "Welcome to Pizzaria",
-        }
-        response = make_response(
-            jsonify(response_dict),
-            200
-        )
-        return response
-
-api.add_resource(Index, '/')
+@app.route("/")
+def hello():
+    return jsonify({"message": "Welcome to Pizzaria"})
 
 class Restaurants(Resource):
     def get(self):
@@ -106,11 +96,9 @@ class RestaurantPizzas(Resource):
             response = make_response(jsonify(pizza_dict), 201)
             return response
         except ValueError as e:
-            response = make_response({"errors": e.args}, 400)
-            return response
+            return make_response({"errors": e.args}, 400)
         except Exception as e:
-            response = make_response({"errors": e.args}, 400)
-            return response
+            return make_response({"errors": e.args}, 400)
 
 # add the resource to the API
 api.add_resource(RestaurantPizzas, '/restaurant_pizzas')
